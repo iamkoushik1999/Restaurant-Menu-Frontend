@@ -1,0 +1,114 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  fetchRestaurants,
+  deleteRestaurant,
+} from '../../../redux/Slices/restaurantSlice';
+import {
+  Container,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Button,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
+
+const RestaurantList = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { restaurants, loading, error } = useSelector(
+    (state) => state.restaurants
+  );
+
+  useEffect(() => {
+    dispatch(fetchRestaurants());
+  }, [dispatch]);
+
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteRestaurant(id))
+          .unwrap()
+          .then(() =>
+            toast.success('Restaurant deleted successfully', {
+              id: 'delete-toast',
+            })
+          )
+          .catch(() =>
+            toast.error('Failed to delete restaurant', { id: 'delete-toast' })
+          );
+      }
+    });
+  };
+
+  return (
+    <Container>
+      <Typography variant='h4' gutterBottom>
+        Restaurants List
+        <Button
+          variant='contained'
+          color='primary'
+          style={{ float: 'right', marginBottom: '10px' }}
+          onClick={() => navigate('/add')}>
+          Add Restaurant
+        </Button>
+      </Typography>
+
+      {loading && <Typography>Loading...</Typography>}
+      {error && <Typography color='error'>{error}</Typography>}
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Address</TableCell>
+            <TableCell>Phone</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {restaurants.data?.length > 0 ? (
+            restaurants.data?.map((restaurant) => (
+              <TableRow key={restaurant._id}>
+                <TableCell>{restaurant.name}</TableCell>
+                <TableCell>{restaurant.address}</TableCell>
+                <TableCell>{restaurant.phone}</TableCell>
+                <TableCell>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() => navigate(`/edit/${restaurant._id}`)}>
+                    Edit
+                  </Button>
+                  <Button
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => handleDelete(restaurant._id)}
+                    style={{ marginLeft: 10 }}>
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4}>No restaurants found.</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </Container>
+  );
+};
+
+export default RestaurantList;
