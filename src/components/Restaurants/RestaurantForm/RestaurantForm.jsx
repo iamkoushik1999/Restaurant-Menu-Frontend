@@ -112,7 +112,7 @@ const RestaurantForm = () => {
   };
 
   const handleCancel = () => {
-    navigate('/'); // Redirect to restaurant list when clicking Cancel
+    navigate('/restaurant'); // Redirect to restaurant list when clicking Cancel
   };
 
   return (
