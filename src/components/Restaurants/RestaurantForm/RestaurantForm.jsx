@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   addRestaurant,
   updateRestaurant,
-} from '../../../redux/Slices/restaurantSlice';
+  fetchRestaurantById,
+} from '../../../redux/slices/restaurantSlice';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
@@ -13,11 +14,11 @@ const RestaurantForm = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { restaurants, createStatus, updateStatus } = useSelector(
+  const { restaurantDetails, createStatus, updateStatus } = useSelector(
     (state) => state.restaurants
   );
 
-  const [restaurant, setRestaurant] = useState({
+  const initialState = {
     name: '',
     address: '',
     city: '',
@@ -27,16 +28,35 @@ const RestaurantForm = () => {
     phone: '',
     email: '',
     website: '',
-  });
+  };
 
+  const [restaurant, setRestaurant] = useState(initialState);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (id && restaurants.data) {
-      const existingRestaurant = restaurants.data.find((r) => r._id === id);
-      if (existingRestaurant) setRestaurant(existingRestaurant);
+    if (id) {
+      dispatch(fetchRestaurantById(id));
+    } else {
+      setRestaurant(initialState); // Reset form when adding a new restaurant
     }
-  }, [id, restaurants]);
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (id && restaurantDetails) {
+      setRestaurant({
+        _id: restaurantDetails._id || '',
+        name: restaurantDetails.name || '',
+        address: restaurantDetails.address || '',
+        city: restaurantDetails.city || '',
+        state: restaurantDetails.state || '',
+        country: restaurantDetails.country || '',
+        zip: restaurantDetails.zip || '',
+        phone: restaurantDetails.phone || '',
+        email: restaurantDetails.email || '',
+        website: restaurantDetails.website || '',
+      });
+    }
+  }, [restaurantDetails, id]);
 
   const validate = () => {
     let tempErrors = {};
@@ -52,8 +72,7 @@ const RestaurantForm = () => {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(restaurant.email))
       tempErrors.email = 'Invalid email format';
     if (!restaurant.website) tempErrors.website = 'Website is required';
-    // else if (!/^https?:\/\/.+/.test(restaurant.website))
-    //   tempErrors.website = 'Invalid website URL';
+
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
@@ -62,7 +81,7 @@ const RestaurantForm = () => {
     setRestaurant({ ...restaurant, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -70,36 +89,54 @@ const RestaurantForm = () => {
       title: 'Are you sure?',
       showCancelButton: true,
       confirmButtonText: 'Yes, save it!',
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        if (id) {
-          dispatch(updateRestaurant(restaurant))
-            .unwrap()
-            .then(() => toast.success('Restaurant updated successfully'))
-            .catch(() => toast.error('Failed to update restaurant'));
-        } else {
-          dispatch(addRestaurant(restaurant))
-            .unwrap()
-            .then(() => toast.success('Restaurant added successfully'))
-            .catch(() => toast.error('Failed to add restaurant'));
+        try {
+          if (id) {
+            await dispatch(updateRestaurant(restaurant)).unwrap();
+            toast.success('Restaurant updated successfully', {
+              id: 'update-toast',
+            });
+          } else {
+            await dispatch(addRestaurant(restaurant)).unwrap();
+            toast.success('Restaurant added successfully', { id: 'add-toast' });
+
+            setRestaurant(initialState); // Clear form after successful addition
+          }
+          navigate('/');
+        } catch (error) {
+          toast.error('Failed to save restaurant', { id: 'error-toast' });
         }
-        navigate('/');
       }
     });
   };
 
+  const handleCancel = () => {
+    navigate('/'); // Redirect to restaurant list when clicking Cancel
+  };
+
   return (
     <Container>
-      <Typography variant='h4' gutterBottom>
+      <Typography variant='h4'>
         {id ? 'Edit Restaurant' : 'Add Restaurant'}
       </Typography>
       <Box component='form' onSubmit={handleSubmit}>
-        {Object.keys(restaurant).map((field) => (
+        {[
+          'name',
+          'address',
+          'city',
+          'state',
+          'country',
+          'zip',
+          'phone',
+          'email',
+          'website',
+        ].map((field) => (
           <TextField
             key={field}
             name={field}
             label={field.charAt(0).toUpperCase() + field.slice(1)}
-            value={restaurant[field]}
+            value={restaurant[field] || ''}
             onChange={handleChange}
             fullWidth
             margin='normal'
@@ -107,15 +144,14 @@ const RestaurantForm = () => {
             helperText={errors[field] || ''}
           />
         ))}
-        <Button
-          type='submit'
-          variant='contained'
-          color='primary'
-          disabled={createStatus === 'loading' || updateStatus === 'loading'}>
-          {createStatus === 'loading' || updateStatus === 'loading'
-            ? 'Saving...'
-            : 'Save'}
-        </Button>
+        <Box display='flex' justifyContent='space-between' mt={2}>
+          <Button type='submit' variant='contained' color='primary'>
+            Save
+          </Button>
+          <Button variant='contained' color='secondary' onClick={handleCancel}>
+            Cancel
+          </Button>
+        </Box>
       </Box>
     </Container>
   );

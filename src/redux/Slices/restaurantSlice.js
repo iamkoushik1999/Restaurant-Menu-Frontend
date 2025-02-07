@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 
 const API_URL = 'http://localhost:5050/api/v1/restaurant';
 
+// Fetch all restaurants
 export const fetchRestaurants = createAsyncThunk(
   'restaurants/fetchRestaurants',
   async (_, { rejectWithValue }) => {
@@ -16,6 +17,20 @@ export const fetchRestaurants = createAsyncThunk(
   }
 );
 
+// Fetch a single restaurant by ID
+export const fetchRestaurantById = createAsyncThunk(
+  'restaurants/fetchRestaurantById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_URL}/${id}`);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+// Add a new restaurant
 export const addRestaurant = createAsyncThunk(
   'restaurants/addRestaurant',
   async (restaurant, { rejectWithValue }) => {
@@ -30,15 +45,17 @@ export const addRestaurant = createAsyncThunk(
   }
 );
 
+// Update an existing restaurant
 export const updateRestaurant = createAsyncThunk(
   'restaurants/updateRestaurant',
   async (restaurant, { rejectWithValue }) => {
     try {
+      console.log(restaurant);
       const response = await axios.put(
-        `${API_URL}/${restaurant.id}`,
+        `${API_URL}/update/${restaurant._id}`,
         restaurant
       );
-      toast.success('Restaurant updated successfully');
+      // toast.success('Restaurant updated successfully');
       return response.data;
     } catch (error) {
       toast.error('Failed to update restaurant');
@@ -47,17 +64,19 @@ export const updateRestaurant = createAsyncThunk(
   }
 );
 
+// Delete a restaurant
 export const deleteRestaurant = createAsyncThunk(
   'restaurants/deleteRestaurant',
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/delete/${id}`);
-      toast.success('Restaurant deleted successfully');
-      return id;
+      const response = await axios.delete(`${API_URL}/delete/${id}`);
+      if (response.data.success === true) {
+        return id;
+      } else {
+        return rejectWithValue('Failed to delete');
+      }
     } catch (error) {
-      console.log(error)
-      toast.error('Failed to delete restaurant');
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Failed to delete');
     }
   }
 );
@@ -66,6 +85,7 @@ const restaurantSlice = createSlice({
   name: 'restaurants',
   initialState: {
     restaurants: [],
+    restaurantDetails: null,
     status: 'idle',
     createStatus: 'idle',
     updateStatus: 'idle',
@@ -86,6 +106,9 @@ const restaurantSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload;
       })
+      .addCase(fetchRestaurantById.fulfilled, (state, action) => {
+        state.restaurantDetails = action.payload;
+      })
       .addCase(addRestaurant.pending, (state) => {
         state.createStatus = 'loading';
       })
@@ -102,12 +125,6 @@ const restaurantSlice = createSlice({
       })
       .addCase(updateRestaurant.fulfilled, (state, action) => {
         state.updateStatus = 'succeeded';
-        const index = state.restaurants.findIndex(
-          (r) => r.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.restaurants[index] = action.payload;
-        }
       })
       .addCase(updateRestaurant.rejected, (state, action) => {
         state.updateStatus = 'failed';
@@ -118,9 +135,6 @@ const restaurantSlice = createSlice({
       })
       .addCase(deleteRestaurant.fulfilled, (state, action) => {
         state.deleteStatus = 'succeeded';
-        state.restaurants = state.restaurants.filter(
-          (r) => r.id !== action.payload
-        );
       })
       .addCase(deleteRestaurant.rejected, (state, action) => {
         state.deleteStatus = 'failed';

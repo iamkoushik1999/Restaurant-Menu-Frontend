@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchRestaurants,
   deleteRestaurant,
-} from '../../../redux/Slices/restaurantSlice';
+} from '../../../redux/slices/restaurantSlice';
 import {
   Container,
   Typography,
@@ -37,17 +37,20 @@ const RestaurantList = () => {
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
-      if (result.isConfirmed) {
+      console.log(result);
+      if (result.isConfirmed === true) {
         dispatch(deleteRestaurant(id))
           .unwrap()
-          .then(() =>
+          .then(() => {
             toast.success('Restaurant deleted successfully', {
               id: 'delete-toast',
-            })
-          )
-          .catch(() =>
-            toast.error('Failed to delete restaurant', { id: 'delete-toast' })
-          );
+            });
+            dispatch(fetchRestaurants());
+          })
+          .catch((error) => {
+            console.log(error);
+            toast.error('Failed to delete restaurant', { id: 'delete-toast' });
+          });
       }
     });
   };
