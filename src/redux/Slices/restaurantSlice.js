@@ -36,7 +36,6 @@ export const addRestaurant = createAsyncThunk(
   async (restaurant, { rejectWithValue }) => {
     try {
       const response = await axios.post(API_URL, restaurant);
-      toast.success('Restaurant added successfully');
       return response.data;
     } catch (error) {
       toast.error('Failed to add restaurant');

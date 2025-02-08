@@ -103,7 +103,7 @@ const RestaurantForm = () => {
 
             setRestaurant(initialState); // Clear form after successful addition
           }
-          navigate('/');
+          navigate('/restaurant');
         } catch (error) {
           toast.error('Failed to save restaurant', { id: 'error-toast' });
         }
