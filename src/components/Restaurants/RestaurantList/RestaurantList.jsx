@@ -63,7 +63,7 @@ const RestaurantList = () => {
           variant='contained'
           color='primary'
           style={{ float: 'right', marginBottom: '10px' }}
-          onClick={() => navigate('/add')}>
+          onClick={() => navigate('/restaurant/add')}>
           Add Restaurant
         </Button>
       </Typography>
@@ -77,6 +77,7 @@ const RestaurantList = () => {
             <TableCell>Address</TableCell>
             <TableCell>Phone</TableCell>
             <TableCell>Actions</TableCell>
+            <TableCell>Categories</TableCell> {/* ✅ New Column */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -90,7 +91,9 @@ const RestaurantList = () => {
                   <Button
                     variant='contained'
                     color='primary'
-                    onClick={() => navigate(`/edit/${restaurant._id}`)}>
+                    onClick={() =>
+                      navigate(`/restaurant/edit/${restaurant._id}`)
+                    }>
                     Edit
                   </Button>
                   <Button
@@ -101,11 +104,30 @@ const RestaurantList = () => {
                     Delete
                   </Button>
                 </TableCell>
+                <TableCell>
+                  <Button
+                    variant='contained'
+                    color='success'
+                    onClick={() =>
+                      navigate(`/restaurant/add-category/${restaurant._id}`)
+                    }>
+                    Add Category
+                  </Button>
+                  <Button
+                    variant='contained'
+                    color='info'
+                    onClick={() =>
+                      navigate(`/restaurant/categories/${restaurant._id}`)
+                    }
+                    style={{ marginLeft: 10 }}>
+                    View Category
+                  </Button>
+                </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4}>No restaurants found.</TableCell>
+              <TableCell colSpan={5}>No restaurants found.</TableCell>
             </TableRow>
           )}
         </TableBody>

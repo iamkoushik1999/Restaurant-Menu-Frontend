@@ -1,7 +1,7 @@
 // import React from 'react'
 import RestaurantForm from '../../components/Restaurants/RestaurantForm/RestaurantForm';
 
-const Restaurant = () => {
+const RestaurantFormPage = () => {
   return (
     <div>
       <RestaurantForm />
@@ -9,4 +9,4 @@ const Restaurant = () => {
   );
 };
 
-export default Restaurant;
+export default RestaurantFormPage;

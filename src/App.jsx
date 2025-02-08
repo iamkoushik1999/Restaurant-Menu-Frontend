@@ -1,21 +1,18 @@
 import './App.css';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // React Hot Toast
 import { Toaster } from 'react-hot-toast';
 // Pages
-import Restaurant from './pages/Restaurants/Restaurant';
-import RestaurantForm from './pages/Restaurants/RestaurantForm';
+import RestaurantListPage from './pages/Restaurants/RestaurantListPage';
+import RestaurantFormPage from './pages/Restaurants/RestaurantFormPage';
 import Home from './pages/Home/Home';
 import AboutUsPage from './pages/About/AboutUsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicy/PrivacyPolicyPage';
 import TermsPage from './pages/Terms/TermsPage';
 import ContactUsPage from './pages/ContactUs/ContactUsPage';
 import NotFoundPage from './pages/NotFound/NotFoundPage';
+import CategoryFormPage from './pages/Category/CategoryFormPage';
+import CategoryListPage from './pages/Category/CategoryListPage';
 
 const App = () => {
   return (
@@ -40,11 +37,20 @@ const App = () => {
           <Route path='/privacy-policy' element={<PrivacyPolicyPage />} />
           <Route path='/terms-conditions' element={<TermsPage />} />
           <Route path='/contact-us' element={<ContactUsPage />} />
-          {/* <Route path='/not-found' element={<NotFoundPage />} /> */}
-          <Route path='/restaurant' element={<Restaurant />} />
-          <Route path='/add' element={<RestaurantForm />} />
-          <Route path='/edit/:id' element={<RestaurantForm />} />
-          {/* <Route path='*' element={<Navigate to='/' replace />} /> */}
+          {/* Restaurant */}
+          <Route path='/restaurant' element={<RestaurantListPage />} />
+          <Route path='/restaurant/add' element={<RestaurantFormPage />} />
+          <Route path='/restaurant/edit/:id' element={<RestaurantFormPage />} />
+          {/* Category */}
+          <Route
+            path='/restaurant/add-category/:id'
+            element={<CategoryFormPage />}
+          />
+          <Route
+            path='/restaurant/categories/:id'
+            element={<CategoryListPage />}
+          />
+          {/* 404 */}
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </div>

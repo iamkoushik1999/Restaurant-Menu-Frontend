@@ -1,7 +1,7 @@
 // import React from 'react';
 import RestaurantList from '../../components/Restaurants/RestaurantList/RestaurantList';
 
-const Restaurant = () => {
+const RestaurantListPage = () => {
   return (
     <div>
       <RestaurantList />
@@ -9,4 +9,4 @@ const Restaurant = () => {
   );
 };
 
-export default Restaurant;
+export default RestaurantListPage;
