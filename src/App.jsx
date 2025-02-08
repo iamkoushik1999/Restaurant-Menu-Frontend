@@ -42,14 +42,8 @@ const App = () => {
           <Route path='/restaurant/add' element={<RestaurantFormPage />} />
           <Route path='/restaurant/edit/:id' element={<RestaurantFormPage />} />
           {/* Category */}
-          <Route
-            path='/restaurant/add-category/:id'
-            element={<CategoryFormPage />}
-          />
-          <Route
-            path='/restaurant/categories/:id'
-            element={<CategoryListPage />}
-          />
+          <Route path='/add-category/:id' element={<CategoryFormPage />} />
+          <Route path='/categories/:id' element={<CategoryListPage />} />
           {/* 404 */}
           <Route path='*' element={<NotFoundPage />} />
         </Routes>

@@ -109,7 +109,7 @@ const RestaurantList = () => {
                     variant='contained'
                     color='success'
                     onClick={() =>
-                      navigate(`/restaurant/add-category/${restaurant._id}`)
+                      navigate(`/add-category/${restaurant._id}`)
                     }>
                     Add Category
                   </Button>
@@ -117,7 +117,7 @@ const RestaurantList = () => {
                     variant='contained'
                     color='info'
                     onClick={() =>
-                      navigate(`/restaurant/categories/${restaurant._id}`)
+                      navigate(`/categories/${restaurant._id}`)
                     }
                     style={{ marginLeft: 10 }}>
                     View Category
