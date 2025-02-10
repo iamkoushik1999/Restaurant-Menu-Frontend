@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchCategories,
   deleteCategory,
-} from '../../../redux/slices/categorySlice.js';
+} from '../../../redux/features/categorySlice.js';
 import {
   Container,
   Typography,

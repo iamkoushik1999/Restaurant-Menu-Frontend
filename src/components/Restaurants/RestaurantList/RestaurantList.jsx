@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchRestaurants,
   deleteRestaurant,
-} from '../../../redux/slices/restaurantSlice';
+} from '../../../redux/features/restaurantSlice';
 import {
   Container,
   Typography,

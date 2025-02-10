@@ -4,7 +4,7 @@ import {
   addRestaurant,
   updateRestaurant,
   fetchRestaurantById,
-} from '../../../redux/slices/restaurantSlice';
+} from '../../../redux/features/restaurantSlice';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
