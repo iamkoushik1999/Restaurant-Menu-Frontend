@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const API_URL = 'http://localhost:5050/api/v1/restaurant';
+const API_URL = 'https://restaurant-menu-backend-n2hs.onrender.com/api/v1/restaurant';
 
 // Fetch all restaurants
 export const fetchRestaurants = createAsyncThunk(
