@@ -13,15 +13,18 @@ import {
   TableHead,
   TableRow,
   Button,
+  Box,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+// Loader
+import { DotLoader } from 'react-spinners';
 
 const RestaurantList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { restaurants, loading, error } = useSelector(
+  const { restaurants, status, error } = useSelector(
     (state) => state.restaurants
   );
 
@@ -68,70 +71,92 @@ const RestaurantList = () => {
         </Button>
       </Typography>
 
-      {loading && <Typography>Loading...</Typography>}
+      {/* {status === 'loading' && <Typography>Loading...</Typography>} */}
       {error && <Typography color='error'>{error}</Typography>}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Phone</TableCell>
-            <TableCell>Actions</TableCell>
-            <TableCell>Categories</TableCell> {/* ✅ New Column */}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {restaurants.data?.length > 0 ? (
-            restaurants.data?.map((restaurant) => (
-              <TableRow key={restaurant._id}>
-                <TableCell>{restaurant.name}</TableCell>
-                <TableCell>{restaurant.address}</TableCell>
-                <TableCell>{restaurant.phone}</TableCell>
-                <TableCell>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={() =>
-                      navigate(`/restaurant/edit/${restaurant._id}`)
-                    }>
-                    Edit
-                  </Button>
-                  <Button
-                    variant='contained'
-                    color='secondary'
-                    onClick={() => handleDelete(restaurant._id)}
-                    style={{ marginLeft: 10 }}>
-                    Delete
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant='contained'
-                    color='success'
-                    onClick={() =>
-                      navigate(`/add-category/${restaurant._id}`)
-                    }>
-                    Add Category
-                  </Button>
-                  <Button
-                    variant='contained'
-                    color='info'
-                    onClick={() =>
-                      navigate(`/categories/${restaurant._id}`)
-                    }
-                    style={{ marginLeft: 10 }}>
-                    View Category
-                  </Button>
-                </TableCell>
+      {status === 'loading' ? (
+        <>
+          <Box
+            display='flex'
+            justifyContent='center'
+            alignItems='center'
+            height='90vh'>
+            <DotLoader
+              color='#000'
+              margin={2}
+              radius={20}
+              speedMultiplier={1}
+              aria-label='loading'
+              data-testid='loader'
+              size={100}
+            />
+          </Box>
+        </>
+      ) : (
+        <>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Address</TableCell>
+                <TableCell>Phone</TableCell>
+                <TableCell>Actions</TableCell>
+                <TableCell>Categories</TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={5}>No restaurants found.</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            </TableHead>
+            <TableBody>
+              {restaurants.data?.length > 0 ? (
+                restaurants.data?.map((restaurant) => (
+                  <TableRow key={restaurant._id}>
+                    <TableCell>{restaurant.name}</TableCell>
+                    <TableCell>{restaurant.address}</TableCell>
+                    <TableCell>{restaurant.phone}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={() =>
+                          navigate(`/restaurant/edit/${restaurant._id}`)
+                        }>
+                        Edit
+                      </Button>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => handleDelete(restaurant._id)}
+                        style={{ marginLeft: 10 }}>
+                        Delete
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant='contained'
+                        color='success'
+                        onClick={() =>
+                          navigate(`/add-category/${restaurant._id}`)
+                        }>
+                        Add Category
+                      </Button>
+                      <Button
+                        variant='contained'
+                        color='info'
+                        onClick={() =>
+                          navigate(`/categories/${restaurant._id}`)
+                        }
+                        style={{ marginLeft: 10 }}>
+                        View Category
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5}>No restaurants found.</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </>
+      )}
     </Container>
   );
 };
