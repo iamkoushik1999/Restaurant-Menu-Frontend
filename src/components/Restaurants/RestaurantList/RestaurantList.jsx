@@ -13,13 +13,12 @@ import {
   TableHead,
   TableRow,
   Button,
-  Box,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 // Loader
-import { DotLoader } from 'react-spinners';
+import Loader from '../../Loader/CustomLoader';
 
 const RestaurantList = () => {
   const dispatch = useDispatch();
@@ -75,21 +74,7 @@ const RestaurantList = () => {
       {error && <Typography color='error'>{error}</Typography>}
       {status === 'loading' ? (
         <>
-          <Box
-            display='flex'
-            justifyContent='center'
-            alignItems='center'
-            height='90vh'>
-            <DotLoader
-              color='#000'
-              margin={2}
-              radius={20}
-              speedMultiplier={1}
-              aria-label='loading'
-              data-testid='loader'
-              size={100}
-            />
-          </Box>
+          <Loader />
         </>
       ) : (
         <>
