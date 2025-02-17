@@ -32,6 +32,9 @@ const CategoryListPage = lazy(() =>
   import('./pages/Category/CategoryListPage')
 );
 
+// Login Page
+const Login = lazy(() => import('./pages/Login/Login'));
+
 const App = () => {
   return (
     <Router>
@@ -66,6 +69,8 @@ const App = () => {
             {/* Category Routes */}
             <Route path='/add-category/:id' element={<CategoryFormPage />} />
             <Route path='/categories/:id' element={<CategoryListPage />} />
+            {/* Login */}
+            <Route path='/login' element={<Login />} />
             {/* 404 */}
             <Route path='*' element={<NotFoundPage />} />
           </Routes>
