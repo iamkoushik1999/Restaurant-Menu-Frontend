@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  Container,
   TextField,
   Button,
   Typography,
@@ -8,12 +8,17 @@ import {
   IconButton,
   InputAdornment,
   Card,
+  CircularProgress,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../redux/features/authSlice';
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
+
   const [showPassword, setShowPassword] = useState(false);
   const [credentials, setCredentials] = useState({ email: '', password: '' });
 
@@ -22,8 +27,11 @@ const LoginForm = () => {
   };
 
   const handleLogin = () => {
-    console.log('Login attempt:', credentials);
-    // Add authentication logic here
+    dispatch(loginUser(credentials)).then((result) => {
+      if (result.meta.requestStatus === 'fulfilled') {
+        navigate('/dashboard'); // Redirect after successful login
+      }
+    });
   };
 
   return (
@@ -87,14 +95,22 @@ const LoginForm = () => {
           }}
         />
 
+      {/* Error Message */}
+        {error && (
+          <Typography color='error' sx={{ mt: 1, textAlign: 'center' }}>
+            {error}
+          </Typography>
+        )}
+
         {/* Login Button */}
         <Button
           fullWidth
           variant='contained'
           color='primary'
           sx={{ mt: 2, bgcolor: '#ff7043', '&:hover': { bgcolor: '#e64a19' } }}
-          onClick={handleLogin}>
-          Login
+          onClick={handleLogin}
+          disabled={loading}>
+          {loading ? <CircularProgress size={24} color='inherit' /> : 'Login'}
         </Button>
 
         {/* Contact Admin Link */}
