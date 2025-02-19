@@ -82,7 +82,7 @@ const RestaurantList = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell>Address</TableCell>
+                <TableCell>Email</TableCell>
                 <TableCell>Phone</TableCell>
                 <TableCell>Actions</TableCell>
                 <TableCell>Categories</TableCell>
@@ -93,7 +93,7 @@ const RestaurantList = () => {
                 restaurants.data?.map((restaurant) => (
                   <TableRow key={restaurant._id}>
                     <TableCell>{restaurant.name}</TableCell>
-                    <TableCell>{restaurant.address}</TableCell>
+                    <TableCell>{restaurant.email}</TableCell>
                     <TableCell>{restaurant.phone}</TableCell>
                     <TableCell>
                       <Button
